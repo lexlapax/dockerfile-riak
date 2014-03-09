@@ -52,6 +52,6 @@ ADD https://raw.github.com/lexlapax/dockerfile-riak/master/fixconfigs.sh /home/r
 RUN /bin/bash /home/root/fixconfigs.sh
 
 # Expose Protocol Buffers and HTTP interfaces
-EXPOSE 8087 8098 22
+EXPOSE 8087 8098 8069 22
 
 CMD ["/usr/bin/supervisord"]
