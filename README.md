@@ -47,6 +47,7 @@ Changes from hectcastro/docker-riak
 		-name "riak1" \
 		"lapax/riak"
 or just
+	
 	docker run -d -t -i lapax/riak
 
 ### Cluster installation
