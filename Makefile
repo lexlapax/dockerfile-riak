@@ -11,10 +11,10 @@ riak-container:
 	sudo docker build -t "lapax/riak" .
 
 start-cluster:
-	./bin/start-cluster.sh
+	./bin/start-cluster.sh 3
 
 test-cluster:
-	./bin/test-cluster.sh
+	./bin/test-cluster.sh 3
 
 stop-cluster:
 	./bin/stop-cluster.sh
