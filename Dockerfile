@@ -40,21 +40,16 @@ RUN apt-get update
 # Install Riak and prepare it to run
 RUN apt-get install -y riak
 
-RUN sed -i.bak 's/127.0.0.1/0.0.0.0/' /etc/riak/app.config
-
-# switch to leveldb as the riak backend
-RUN sed -i -e s/riak_kv_bitcask_backend/riak_kv_eleveldb_backend/g /etc/riak/app.config
-# enable search. the sed command below only replaces the first line it matches
-RUN sed -i -e 0,/"enabled, false"/{s/"enabled, false"/"enabled, true"/} /etc/riak/app.config
-
-# enable admin panel. replaces the second line it matches
-RUN sed -i -e 1,/"enabled, false"/{s/"enabled, false"/"enabled, true"/} /etc/riak/app.config
-
-#change the admin user
-RUN sed -i.bak 's/"user", "pass"/"admin", "adminpass"/' /etc/riak/app.config
-
-RUN echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(ip addr show eth0 scope global primary|grep inet|awk '{print \$2}'|awk -F'/' '{print \$1}')/\" /etc/riak/vm.args" > /etc/default/riak
-RUN echo "ulimit -n 4096" >> /etc/default/riak
+# fix the configs in /etc/riak/app.config and /etc/riak/vm.args
+# app.config
+#  -listen address
+#  -leveldb backend
+#  -enable admin panel
+#  -enable ssl for admin panel
+#  -admin user
+#  -/etc/default/riak - for nodename and ulimit
+ADD https://raw.github.com/lexlapax/dockerfile-riak/master/fixconfigs.sh /home/root/fixconfigs.sh
+RUN /bin/bash /home/root/fixconfigs.sh
 
 # Expose Protocol Buffers and HTTP interfaces
 EXPOSE 8087 8098 22
