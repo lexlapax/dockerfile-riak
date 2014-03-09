@@ -21,6 +21,12 @@ RUN mkdir -p /var/run/sshd
 
 RUN locale-gen en_US en_US.UTF-8
 
+# Hack for initctl
+# See: https://github.com/dotcloud/docker/issues/1024
+RUN dpkg-divert --local --rename --add /sbin/initctl
+RUN ln -sf /bin/true /sbin/initctl
+
+
 ADD https://raw.github.com/lexlapax/dockerfile-riak/master/etc/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN echo 'root:basho' | chpasswd
@@ -49,11 +55,6 @@ RUN sed -i.bak 's/"user", "pass"/"admin", "adminpass"/' /etc/riak/app.config
 
 RUN echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(ip addr show eth0 scope global primary|grep inet|awk '{print \$2}'|awk -F'/' '{print \$1}')/\" /etc/riak/vm.args" > /etc/default/riak
 RUN echo "ulimit -n 4096" >> /etc/default/riak
-
-# Hack for initctl
-# See: https://github.com/dotcloud/docker/issues/1024
-RUN dpkg-divert --local --rename --add /sbin/initctl
-RUN ln -s /bin/true /sbin/initctl
 
 # Expose Protocol Buffers and HTTP interfaces
 EXPOSE 8087 8098 22
