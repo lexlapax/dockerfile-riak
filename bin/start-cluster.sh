@@ -14,9 +14,17 @@ if sudo docker ps | grep "lapax/riak" >/dev/null; then
   exit 1
 fi
 
+if [ -z "$1" ]
+  then
+    seqnum=5
+else
+  seqnum=$1
+fi
+echo "starting a cluster with ${seqnum} nodes"
+
 mkdir -p data
 
-for index in `seq 5`;
+for index in `seq ${seqnum}`;
 do
   mkdir -p data/riak${index}/{ring,testdir}
   chmod 777 data/riak${index}
