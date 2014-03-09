@@ -97,7 +97,7 @@ $ make test-cluster 3
 
 #### Admin cluster
 
-log in via browser to http://<nodeip>:8069/admin
+log in via browser to https://<<nodeip>>:8069/admin
 with default user name password (admin / adminpass)
 
 
