@@ -13,10 +13,6 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 RUN apt-get update
 RUN apt-get upgrade -y
 
-# Hack for initctl
-# See: https://github.com/dotcloud/docker/issues/1024
-RUN dpkg-divert --local --rename --add /sbin/initctl
-RUN ln -s /bin/true /sbin/initctl
 
 # Install and setup project dependencies
 RUN apt-get install -y curl lsb-release supervisor openssh-server
@@ -54,6 +50,10 @@ RUN sed -i.bak 's/"user", "pass"/"admin", "adminpass"/' /etc/riak/app.config
 RUN echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(ip addr show eth0 scope global primary|grep inet|awk '{print \$2}'|awk -F'/' '{print \$1}')/\" /etc/riak/vm.args" > /etc/default/riak
 RUN echo "ulimit -n 4096" >> /etc/default/riak
 
+# Hack for initctl
+# See: https://github.com/dotcloud/docker/issues/1024
+RUN dpkg-divert --local --rename --add /sbin/initctl
+RUN ln -s /bin/true /sbin/initctl
 
 # Expose Protocol Buffers and HTTP interfaces
 EXPOSE 8087 8098 22
