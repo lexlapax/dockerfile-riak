@@ -19,5 +19,7 @@ sed -i.bak '/%.\+{keyfile, .*/ {N; s/%\(.\+keyfile, .\+pem"\}\)\n\(.\+\)%\(.\+\)
 #change the admin user
 sed -i.bak 's/"user", "pass"/"admin", "adminpass"/' /etc/riak/app.config
 
-echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(ip addr show eth0 scope global primary|grep inet|awk '{print \$2}'|awk -F'/' '{print \$1}')/\" /etc/riak/vm.args" > /etc/default/riak
+#echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(ip addr show eth0 scope global primary|grep inet|awk '{print \$2}'|awk -F'/' '{print \$1}')/\" /etc/riak/vm.args" > /etc/default/riak
+# use hostname instead -- need to have a dns set up working with ddns for docker
+echo "sed -i.bak \"s/-name riak@.\+/-name riak@\$(hostname)/\" /etc/riak/vm.args" > /etc/default/riak
 echo "ulimit -n 4096" >> /etc/default/riak
