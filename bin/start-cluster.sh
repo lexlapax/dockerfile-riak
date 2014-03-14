@@ -20,9 +20,9 @@ if [ -z "$1" ]
 else
   seqnum=$1
 fi
-if [-z "$2" ]
+if [ -z "$2" ]
   then
-    datadir=data
+    datadir=`pwd`/data
 else
     datadir=$2
 fi
@@ -33,24 +33,29 @@ mkdir -p ${datadir}
 
 for index in `seq ${seqnum}`;
 do
-  mkdir -p ${datadir}/riak${index}/{ring,testdir}
-  chmod 777 ${datadir}/riak${index}
-  chmod 777 ${datadir}/riak${index}/*
-
+  sudo mkdir -p ${datadir}/riak${index}/{ring,testdir}
+  sudo chmod 777 ${datadir}/riak${index}
+  sudo chmod 777 ${datadir}/riak${index}/*
+  if [ -z "$DOMAIN" ]; then
+    HOSTNAME=riak${index} 
+  else
+    HOSTNAME=riak${index}.${DOMAIN}
+  fi
   CONTAINER_ID=$(sudo docker run -d -t -i \
-    -h "riak${index}" \
+    -h "${HOSTNAME}" \
     -v ${datadir}/riak${index}:/var/lib/riak \
-    -name "riak${index}" \
+    --name "riak${index}" \
     "lapax/riak")
 
   sleep 1
 
   #sudo ./bin/pipework br1 ${CONTAINER_ID} "33.33.33.${index}0/24@33.33.33.1"
-  hostip=$(sudo docker inspect -format '{{ .NetworkSettings.IPAddress }}' riak${index})
-  echo "Started [riak${index}] with assigned IP ${hostip}]"
+  hostip=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' riak${index})
+  echo "Started [${HOSTNAME}] with assigned IP ${hostip}]"
 
   if [ "$index" -eq "1" ] ; then
     firsthostip=${hostip}
+    FIRSTHOST=${HOSTNAME}
   #  sudo ifconfig br1 33.33.33.254
   #
   #  sleep 1
@@ -66,7 +71,7 @@ do
 
     sshpass -p "basho" \
       ssh -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -o "LogLevel quiet" root@${hostip} \
-        riak-admin cluster join riak@${firsthostip}
+        riak-admin cluster join riak@${FIRSTHOST}
   fi
 done
 
