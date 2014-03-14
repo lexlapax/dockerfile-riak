@@ -20,19 +20,26 @@ if [ -z "$1" ]
 else
   seqnum=$1
 fi
-echo "starting a cluster with ${seqnum} nodes"
+if [-z "$2" ]
+  then
+    datadir=data
+else
+    datadir=$2
+fi
 
-mkdir -p data
+echo "starting a cluster with ${seqnum} nodes using ${datadir} for data"
+
+mkdir -p ${datadir}
 
 for index in `seq ${seqnum}`;
 do
-  mkdir -p data/riak${index}/{ring,testdir}
-  chmod 777 data/riak${index}
-  chmod 777 data/riak${index}/*
+  mkdir -p ${datadir}/riak${index}/{ring,testdir}
+  chmod 777 ${datadir}/riak${index}
+  chmod 777 ${datadir}/riak${index}/*
 
   CONTAINER_ID=$(sudo docker run -d -t -i \
     -h "riak${index}" \
-    -v `pwd`/data/riak${index}:/var/lib/riak \
+    -v ${datadir}/riak${index}:/var/lib/riak \
     -name "riak${index}" \
     "lapax/riak")
 
