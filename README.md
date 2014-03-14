@@ -22,6 +22,7 @@ Changes from hectcastro/docker-riak
 
 * start-cluster and test-cluster takes an optional numeric argument for number of nodes - defaults to 5
 
+* uses dynamic dns to update an external dyndns server from docker events - see docker_dns file
 
 ### major features retained 
 
