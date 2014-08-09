@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # Docker Event Listener / DDNS
 # changed by lex lapax <lexlapax@gmail.com>
-# code: https://github.com/lapax/dockerfile-riak/blob/master/docker_ddns
+# code: https://github.com/lexlapax/dockerfile-riak/blob/master/docker_ddns
 # based on
 # Author: Kelly Becker <kbecker@kellybecker.me>
 # Website: http://kellybecker.me
